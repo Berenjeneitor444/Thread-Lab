@@ -8,11 +8,17 @@ public class ControlPanel extends JPanel {
     public Cancel getCancel() {
         return cancel;
     }
+    public Hilo getHilo() {
+        return hilo;
+    }
     private OK oK;
     private Cancel cancel;
+    private Hilo hilo;
+
     public ControlPanel(){
         oK = new OK();
         cancel = new Cancel();
+        hilo = new Hilo();
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridy = 0;
         constraints.gridx = 0;
@@ -26,6 +32,8 @@ public class ControlPanel extends JPanel {
         constraints.gridx = 1;
         this.add(oK, constraints);
         constraints.gridx = 2;
+        this.add(hilo, constraints);
+        constraints.gridx = 3;
         constraints.weightx = 1;
         this.add(Box.createHorizontalGlue(), constraints);
         this.setVisible(true);
