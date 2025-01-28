@@ -19,6 +19,7 @@ public class ControlPanel extends JPanel {
         oK = new OK();
         cancel = new Cancel();
         hilo = new Hilo();
+        this.setBackground(Color.GREEN);
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridy = 0;
         constraints.gridx = 0;

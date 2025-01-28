@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class DataPanel extends JPanel {
     private Data data;
@@ -10,6 +11,7 @@ public class DataPanel extends JPanel {
     public DataPanel(){
         data = new Data();
         this.add(data);
+        this.setBackground(Color.BLUE);
         this.setVisible(true);
         System.out.println("DataViewer Creado");
     }

@@ -10,9 +10,13 @@ public class Resource {
         this.name = name;
     }
     public void addResource(){
-        this.quantity++;
+        if(quantity < maxQuantity) {
+            this.quantity++;
+        }
     }
     public void removeResource(){
-        this.quantity--;
+        if(quantity > minQuantity){
+            this.quantity--;
+        }
     }
 }

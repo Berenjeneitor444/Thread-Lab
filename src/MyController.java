@@ -19,4 +19,8 @@ public class MyController {
     }
     public void play(){}
     public void stop(){}
+
+    public int getCounter() {
+       return myModel.getCounter();
+    }
 }

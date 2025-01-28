@@ -7,6 +7,7 @@ public class MyView extends JFrame implements ActionListener, Runnable {
     private final ControlPanel controlPanel;
     private final Viewer viewer;
     private final DataPanel dataPanel;
+    private final ConfigurationPanel configurationPanel;
     private final MyController father;
 
     public MyView(MyController father) {
@@ -14,29 +15,38 @@ public class MyView extends JFrame implements ActionListener, Runnable {
         controlPanel = new ControlPanel();
         viewer = new Viewer();
         dataPanel = new DataPanel();
+        configurationPanel = new ConfigurationPanel();
         controlPanel.getoK().addActionListener(this);
         controlPanel.getCancel().addActionListener(this);
         controlPanel.getHilo().addActionListener(this);
         System.out.println("MyView creado");
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 1;
+        constraints.gridx = 4;
         constraints.gridy = 0;
 
         constraints.fill = GridBagConstraints.BOTH;
         constraints.weightx = 1;
         constraints.weighty = 1;
+        constraints.gridheight = 4;
+        constraints.gridwidth = 4;
         this.getContentPane().add(viewer, constraints);
         constraints.gridx = 0;
-        constraints.weightx = 0;
-        constraints.weighty = 0;
-        constraints.fill = GridBagConstraints.VERTICAL;
+        constraints.weightx = 0.5;
+        constraints.weighty = 1;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.gridwidth = 2;
+        constraints.gridheight = 3;
         this.add(dataPanel, constraints);
+        constraints.gridx = 2;
+        this.add(configurationPanel, constraints);
         constraints.gridx = 0;
         constraints.gridy = 3;
-        constraints.weighty = 0;
-        constraints.weightx = 1;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.weighty = 0.1;
+        constraints.weightx = 0.1;
+        constraints.gridwidth = 4;
+        constraints.gridheight = 1;
+        constraints.fill = GridBagConstraints.BOTH;
         this.add(controlPanel, constraints);
         this.setSize(800, 630);
         this.setTitle("UML Ejemplo");
