@@ -1,15 +1,18 @@
 import javax.swing.*;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
-public class ConfigurationPanel extends JPanel {
+public class ConfigurationPanel extends JPanel{
     private ConfigurationDTO configurationDTO;
     private JTable table;
+
     public ConfigurationPanel(){
         this.configurationDTO = new ConfigurationDTO();
         table = new JTable(new ConfigurationTableModel());
+        table.setDefaultRenderer(Object.class, this);
         table.getColumnModel().getColumn(0).setPreferredWidth(150);
         table.getColumnModel().getColumn(1).setPreferredWidth(30);
         table.setRowHeight(20);
@@ -41,6 +44,33 @@ public class ConfigurationPanel extends JPanel {
         return configurationDTO;
     }
 
+
+    class ConfigurationTableRenderer extends DefaultTableCellRenderer{
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+            if ((row == 16 || row == 20 || row == 21) && column == 1){
+                JCheckBox checkBox = new JCheckBox();
+                checkBox.setSelected((boolean) value);
+                return checkBox;
+            }
+            else{
+                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            }
+        }
+    }
+    class CheckboxEditor extends AbstractCellEditor implements TableCellEditor {
+        private final JCheckBox checkBox = new JCheckBox();
+        @Override
+        public Object getCellEditorValue() {
+            return checkBox.isSelected();
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            checkBox.setSelected((boolean) value);
+            return checkBox;
+        }
+    }
     class ConfigurationTableModel extends AbstractTableModel {
         private final String[] columnNames = {"Parameter", "Value"};
         private final Object[][] data = {
@@ -60,12 +90,12 @@ public class ConfigurationPanel extends JPanel {
                 {"Start Delay Min (ms)", String.valueOf(configurationDTO.getStartDelayMin())},
                 {"Start Delay Max (ms)", String.valueOf(configurationDTO.getStartDelayMax())},
                 {"**Thread Lifetime Parameters**", null},
-                {"Life Cycle enabled", String.valueOf(configurationDTO.isLifeCycleEnabled())},
+                {"Life Cycle enabled", configurationDTO.isLifeCycleEnabled()},
                 {"Min Cicles", String.valueOf(configurationDTO.getMinCycles())},
                 {"Max Cicles", String.valueOf(configurationDTO.getMaxCycles())},
                 {"**Thread Safety Settings**", null},
-                {"Guarded Blocks Enabled", String.valueOf(configurationDTO.isGuardedBlocksEnabled())},
-                {"Stock Protection Enabled", String.valueOf(configurationDTO.isStockProtectionEnabled())},
+                {"Guarded Blocks Enabled", configurationDTO.isGuardedBlocksEnabled()},
+                {"Stock Protection Enabled", configurationDTO.isStockProtectionEnabled()}
         };
 
         @Override
