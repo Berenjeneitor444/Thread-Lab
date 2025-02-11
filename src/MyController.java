@@ -8,6 +8,7 @@ public class MyController {
     public MyController() {
         myView = new MyView(this);
         myModel = new MyModel(this);
+
     }
 
     public MyView getMyView() {
@@ -17,10 +18,20 @@ public class MyController {
     public MyModel getMyModel() {
         return myModel;
     }
-    public void play(){}
-    public void stop(){}
+    public StatisticsDTO getStatisticsDTO(){
+        return myModel.getStatisticsDTO();
+    }
+    public void play(){
+        myModel.play();
+    }
+    public void stop(){
+        myModel.stop();
+    }
+    public ConfigurationDTO getConfiguration(){
+        return myView.getConfiguration();
+    }
 
-    public int getCounter() {
-       return myModel.getCounter();
+    public void clear() {
+        myModel.clear();
     }
 }

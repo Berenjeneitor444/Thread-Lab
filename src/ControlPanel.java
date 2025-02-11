@@ -2,42 +2,42 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ControlPanel extends JPanel {
-    public OK getoK() {
-        return oK;
+    public Play getPlay() {
+        return play;
     }
-    public Cancel getCancel() {
-        return cancel;
+    public Stop getCancel() {
+        return stop;
     }
-    public Hilo getHilo() {
-        return hilo;
-    }
-    private OK oK;
-    private Cancel cancel;
+    private Play play;
+    private Stop stop;
     private Hilo hilo;
 
     public ControlPanel(){
-        oK = new OK();
-        cancel = new Cancel();
-        hilo = new Hilo();
-        this.setBackground(Color.GREEN);
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridy = 0;
-        constraints.gridx = 0;
-        constraints.weightx = 0;
-        constraints.insets = new Insets(5,20,5,0);
-        constraints.fill = GridBagConstraints.NONE;
-        constraints.anchor = GridBagConstraints.WEST;
-
+        play = new Play();
+        stop = new Stop();
         this.setLayout(new GridBagLayout());
-        this.add(cancel, constraints);
+        GridBagConstraints constraints = new GridBagConstraints();
+
+        constraints.gridy = 0;
         constraints.gridx = 1;
-        this.add(oK, constraints);
-        constraints.gridx = 2;
-        this.add(hilo, constraints);
-        constraints.gridx = 3;
-        constraints.weightx = 1;
-        this.add(Box.createHorizontalGlue(), constraints);
+        constraints.weightx = 0;
+        constraints.weighty = 0;
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.insets = new Insets(0, 5, 0, 5);
+        this.add(stop, constraints);
+
+        constraints.gridx = 0;
+        this.add(play, constraints);
+
         this.setVisible(true);
         System.out.println("Controls creado");
+    }
+    public void toogleStopButton(){
+        if (stop.getText().equals("Stop")){
+            stop.setText("Clear");
+        }
+        else{
+            stop.setText("Stop");
+        }
     }
 }

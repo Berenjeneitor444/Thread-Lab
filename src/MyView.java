@@ -4,6 +4,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MyView extends JFrame implements ActionListener, Runnable {
+    public ConfigurationDTO getConfiguration() {
+        return configurationPanel.getConfiguration();
+    }
+
+    private enum State {
+        RUNNING, STOPPED, CREATED
+    }
+    private State state = State.STOPPED;
     private final ControlPanel controlPanel;
     private final Viewer viewer;
     private final DataPanel dataPanel;
@@ -16,74 +24,101 @@ public class MyView extends JFrame implements ActionListener, Runnable {
         viewer = new Viewer();
         dataPanel = new DataPanel();
         configurationPanel = new ConfigurationPanel();
-        controlPanel.getoK().addActionListener(this);
+        controlPanel.getPlay().addActionListener(this);
         controlPanel.getCancel().addActionListener(this);
-        controlPanel.getHilo().addActionListener(this);
         System.out.println("MyView creado");
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 4;
+        constraints.gridx = 0;
         constraints.gridy = 0;
-
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.weightx = 1;
-        constraints.weighty = 1;
-        constraints.gridheight = 4;
-        constraints.gridwidth = 4;
-        this.getContentPane().add(viewer, constraints);
-        constraints.gridx = 0;
-        constraints.weightx = 0.5;
+        constraints.weightx = 0.75;
         constraints.weighty = 1;
         constraints.fill = GridBagConstraints.BOTH;
-        constraints.gridwidth = 2;
-        constraints.gridheight = 3;
-        this.add(dataPanel, constraints);
-        constraints.gridx = 2;
-        this.add(configurationPanel, constraints);
-        constraints.gridx = 0;
-        constraints.gridy = 3;
-        constraints.weighty = 0.1;
-        constraints.weightx = 0.1;
-        constraints.gridwidth = 4;
+        constraints.anchor = GridBagConstraints.NORTH;
         constraints.gridheight = 1;
-        constraints.fill = GridBagConstraints.BOTH;
-        this.add(controlPanel, constraints);
+        constraints.gridwidth = 1;
+        add(configurationPanel, constraints);
+        constraints.gridy = 1;
+        constraints.weighty = 0;
+        add(controlPanel, constraints);
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        constraints.weightx = 1.5;
+        constraints.weighty = 1;
+        constraints.gridheight = 2;
+        add(dataPanel, constraints);
+        constraints.weightx = 4;
+        constraints.gridx = 2;
+        constraints.gridy = 0;
+        add(viewer, constraints);
         this.setSize(800, 630);
         this.setTitle("UML Ejemplo");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Thread coger = new Thread(this);
-        coger.start();
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String botonTexto;
         var boton = e.getSource();
         if (boton instanceof JButton) {
-            botonTexto = ((JButton) boton).getText();
-            JOptionPane.showMessageDialog(
-                    MyView.this,
-                    "Has presionado " + botonTexto,
-                    "Button Pressed",
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
+            if (boton instanceof Play){
+                if (state == State.STOPPED){
+                    state = State.RUNNING;
+                    father.play();
+                    Thread coger = new Thread(this);
+                    coger.start();
+                }
+            }
+            else if(boton instanceof Stop){
+                if(((Stop) boton).getText().equals("Stop")){
+                    if (state == State.RUNNING){
+                        state = State.STOPPED;
+                        father.stop();
+                        controlPanel.toogleStopButton();
+                    }
+                }
+                else{
+                    dataPanel.updateData(new int[]{0, 0, 0, 0, 0, 0, 0, 0});
+                    viewer.deleteRows();
+                    father.clear();
+                    state = State.STOPPED;
+                    controlPanel.toogleStopButton();
+                }
 
+            }
+        }
     }
 
     @Override
     public void run() {
-        try{
-            int contador = 0;
-            while (contador < 1000) {
+        try {
+            while (state == State.RUNNING) {
+                refreshStatistics();
                 Thread.sleep(100);
-                int counter = father.getCounter();
-                dataPanel.getData().setValueAt(counter, 0, 1);
-                dataPanel.getData().setValueAt(counter, 1, 1);
-                dataPanel.getData().setValueAt(counter, 2, 1);
-                contador++;
             }
+            // espera para actualizar las estadisticas al final
+           Thread.sleep(1000);
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        finally {
+            refreshStatistics();
+        }
+    }
+    private void populateIndividualStats(){
+        StatisticsDTO statisticsDTO = father.getStatisticsDTO();
+        viewer.populateResources(statisticsDTO.getResourceTypesData());
+        viewer.populateProducers(statisticsDTO.getProducersData());
+        viewer.populateConsumers(statisticsDTO.getConsumersData());
+    }
+    private void refreshStatistics(){
+        StatisticsDTO statisticsDTO = father.getStatisticsDTO();
+        int[] data = {statisticsDTO.getTotalResourceTypes(), statisticsDTO.getTotalProducers(),
+                statisticsDTO.getTotalConsumers(), statisticsDTO.getTotalResourceQuantity(),
+                statisticsDTO.getActiveThreads(), statisticsDTO.getIDLEthreads(),
+                statisticsDTO.getTotalProduced(), statisticsDTO.getTotalConsumed()};
+        dataPanel.updateData(data);
+        populateIndividualStats();
     }
 }
