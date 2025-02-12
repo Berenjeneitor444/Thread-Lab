@@ -1,8 +1,10 @@
 import java.awt.*;
 
 public class MyController {
+    public enum State {
+        RUNNING, CREATED, STOPPED, IDLE
+    }
     private MyView myView;
-
     private MyModel myModel;
 
     public MyController() {

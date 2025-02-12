@@ -1,3 +1,4 @@
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -17,11 +18,7 @@ public class MyModel {
         resourceTypes.clear();
         statisticsDTO = new StatisticsDTO();
         mustStop = false;
-        state = State.STOPPED;
-    }
-
-    private enum State {
-        RUNNING, CREATED, STOPPED
+        state = MyController.State.STOPPED;
     }
 
     private final ArrayList<Consumer> consumers = new ArrayList<>();
@@ -30,9 +27,10 @@ public class MyModel {
     private ConfigurationDTO configurationDTO;
     private MyController father;
     private final Random random = new Random();
-    private State state = State.STOPPED;
+    private MyController.State state = MyController.State.STOPPED;
     private StatisticsDTO statisticsDTO;
     private boolean mustStop = false;
+    private final SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss.SSS");
 
     public synchronized void incrementTotalResourceTypes() {
         statisticsDTO.incrementTotalResourceTypes();
@@ -77,8 +75,8 @@ public class MyModel {
     }
 
     public void play() {
-        if (state != State.RUNNING) {
-            state = State.RUNNING;
+        if (state != MyController.State.RUNNING) {
+            state = MyController.State.RUNNING;
             configurationDTO = father.getConfiguration();
             initializeSimulation();
             for (Producer producer : producers) {
@@ -91,8 +89,8 @@ public class MyModel {
     }
 
     public void stop() {
-        if (state == State.RUNNING) {
-            state = State.STOPPED;
+        if (state == MyController.State.RUNNING) {
+            state = MyController.State.STOPPED;
             synchronized (this) {
                 mustStop = true;
             }
@@ -187,9 +185,9 @@ public class MyModel {
             data[6] = "NO LIMIT";
         }
         data[7] = producer.getProcessingTime();
-        data[8] = producer.getStartTime().toString();
+        data[8] = formatter.format(producer.getStartTime());
         if (producer.getStopTime() != null) {
-            data[9] = producer.getStopTime().toString();
+            data[9] = formatter.format(producer.getStopTime());
         } else {
             data[9] = "N/A";
         }
@@ -210,9 +208,9 @@ public class MyModel {
             data[6] = "NO LIMIT";
         }
         data[7] = consumer.getProcessingTime();
-        data[8] = consumer.getStartTime().toString();
+        data[8] = formatter.format(consumer.getStartTime());
         if (consumer.getStopTime() != null) {
-            data[9] = consumer.getStopTime().toString();
+            data[9] = formatter.format(consumer.getStopTime());
         } else {
             data[9] = "N/A";
         }

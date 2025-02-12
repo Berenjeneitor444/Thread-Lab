@@ -3,14 +3,8 @@ import java.util.Random;
 
 public class Producer implements Runnable {
 
-    private enum State {
-        RUNNING, CREATED, STOPPED, IDLE
-
-    }
-
-
     public void turnRUNNING() {
-        state = State.RUNNING;
+        state = MyController.State.RUNNING;
     }
 
     public long getProcessingTime() {
@@ -18,7 +12,7 @@ public class Producer implements Runnable {
     }
 
     public void stop() {
-        state = State.STOPPED;
+        state = MyController.State.STOPPED;
     }
 
     public String getId() {
@@ -30,7 +24,7 @@ public class Producer implements Runnable {
     }
 
     public void turnIDLE() {
-        state = State.IDLE;
+        state = MyController.State.IDLE;
     }
 
     public Date getStartTime() {
@@ -41,7 +35,7 @@ public class Producer implements Runnable {
         return delay;
     }
 
-    public State getState() {
+    public MyController.State getState() {
         return state;
     }
 
@@ -55,7 +49,7 @@ public class Producer implements Runnable {
     private final String id;
     private ResourceType resourceType;
     private final int delay;
-    private State state;
+    private MyController.State state;
     private final int startDelay;
     private long processingTime;
     private final boolean lifeCicle;
@@ -67,7 +61,7 @@ public class Producer implements Runnable {
                     boolean lifeCicle, int minCycles, int maxCycles, boolean guardedBlocksEnabled) {
         this.father = father;
         this.id = id;
-        this.state = State.STOPPED;
+        this.state = MyController.State.STOPPED;
         this.delay = delay;
         this.startDelay = startDelay;
         this.guardedBlocksEnabled = guardedBlocksEnabled;
@@ -86,7 +80,7 @@ public class Producer implements Runnable {
         try {
             Thread.sleep(startDelay);
             if (lifeCicle) {
-                while (state == State.RUNNING) {
+                while (state == MyController.State.RUNNING) {
                     if(currentCycle >= totalCycles){
                         stop();
                     }
@@ -106,7 +100,7 @@ public class Producer implements Runnable {
                 }
             }
             else {
-                while (state == State.RUNNING) {
+                while (state == MyController.State.RUNNING) {
                     Thread.sleep(delay);
                     if(guardedBlocksEnabled) {
                         resourceType.incrementSync(this);
@@ -137,7 +131,7 @@ public class Producer implements Runnable {
         if (startTime == null) {
             startTime = new Date();
         }
-        this.state = State.RUNNING;
+        this.state = MyController.State.RUNNING;
         Thread producir = new Thread(this);
         father.incrementActiveThreads();
         producir.start();

@@ -2,6 +2,7 @@ public class ThreadLab {
     private MyController myController;
     public ThreadLab(){
 
+
         System.out.println("MyTask creado");
     }
     public static void main(String[] args) {

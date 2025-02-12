@@ -3,15 +3,8 @@ import java.util.Random;
 
 public class Consumer implements Runnable {
 
-
     public void stop() {
-        state = State.STOPPED;
-    }
-
-
-    private enum State {
-        RUNNING, CREATED, STOPPED, IDLE;
-
+        state = MyController.State.STOPPED;
     }
     private Date startTime;
     private Date stopTime;
@@ -21,7 +14,7 @@ public class Consumer implements Runnable {
     private int delay;
     private int startDelay;
     private long processingTime;
-    private State state;
+    private MyController.State state;
     private boolean lifeCicle;
     private int totalCycles;
     private boolean guardedBlocksEnabled;
@@ -32,7 +25,7 @@ public class Consumer implements Runnable {
                     boolean guardedBlocksEnabled) {
         this.father = father;
         this.id = name;
-        this.state = State.STOPPED;
+        this.state = MyController.State.STOPPED;
         this.delay = delay;
         this.startDelay = startDelay;
         this.guardedBlocksEnabled = guardedBlocksEnabled;
@@ -50,7 +43,7 @@ public class Consumer implements Runnable {
         try {
             Thread.sleep(startDelay);
             if (lifeCicle) {
-                while (state == State.RUNNING) {
+                while (state == MyController.State.RUNNING) {
                     if(currentCycle >= totalCycles){
                         stop();
                     }
@@ -69,7 +62,7 @@ public class Consumer implements Runnable {
                 }
             }
             else {
-                while (state == State.RUNNING) {
+                while (state == MyController.State.RUNNING) {
                     Thread.sleep(delay);
                     if (guardedBlocksEnabled) {
                         resourceType.decrementSync(this);
@@ -99,7 +92,7 @@ public class Consumer implements Runnable {
         if (startTime == null) {
             startTime = new Date();
         }
-        this.state = State.RUNNING;
+        this.state = MyController.State.RUNNING;
         Thread consumir = new Thread(this);
         father.incrementActiveThreads();
         consumir.start();
@@ -119,16 +112,16 @@ public class Consumer implements Runnable {
     }
 
     public void turnIDLE() {
-        state = State.IDLE;
+        state = MyController.State.IDLE;
     }
     public void turnRUNNING() {
-        state = State.RUNNING;
+        state = MyController.State.RUNNING;
     }
     public long getProcessingTime() {
         return processingTime;
     }
 
-    public State getState() {
+    public MyController.State getState() {
         return state;
     }
 

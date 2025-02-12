@@ -25,16 +25,17 @@ public class ResourceType {
         if(stockProtectionEnabled) {
             // que siga esperando hasta que haya espacio
             while (quantity >= maxQuantity && !father.isMustStop()) {
-                try {
-                    producer.turnIDLE();
-                    father.incrementIDLEthreads();
-                    wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    producer.turnRUNNING();
-                    father.decrementIDLEthreads();
+                // condicional para que solo entre en el bloque de abajo una vez y luego se quede esperando
+                if (producer.getState() == MyController.State.IDLE){
+                    continue;
                 }
+                producer.turnIDLE();
+                father.incrementIDLEthreads();
+            }
+            // aqui ya sale y sigue
+            if (producer.getState() == MyController.State.IDLE) {
+                producer.turnRUNNING();
+                father.decrementIDLEthreads();
             }
             // para que no se queden en bucle en idle si la quantity esta en maxquantity
             if (father.isMustStop()) {
@@ -46,24 +47,22 @@ public class ResourceType {
         this.quantity++;
         father.incrementTotalResourceQuantity();
 
-        if(stockProtectionEnabled) notifyAll();
-
     }
-    public void decrement(Consumer consumer){
-        if(stockProtectionEnabled) {
-            // que siga esperando hasta que haya recursos
+    public void decrement(Consumer consumer) {
+        if (stockProtectionEnabled) {
+            // que siga esperando hasta que haya espacio
             while (quantity <= minQuantity && !father.isMustStop()) {
-                try {
-                    consumer.turnIDLE();
-                    father.incrementIDLEthreads();
-                    wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    consumer.turnRUNNING();
-                    father.decrementIDLEthreads();
+                // condicional para que solo entre en el bloque de abajo una vez y luego se quede esperando
+                if (consumer.getState() == MyController.State.IDLE) {
+                    continue;
                 }
-
+                consumer.turnIDLE();
+                father.incrementIDLEthreads();
+            }
+            // aqui ya sale y sigue
+            if (consumer.getState() == MyController.State.IDLE) {
+                consumer.turnRUNNING();
+                father.decrementIDLEthreads();
             }
             // para que no se queden en bucle en idle si la quantity esta en minquantity
             if (father.isMustStop()) {
@@ -74,9 +73,10 @@ public class ResourceType {
         // entonces consume
         this.quantity--;
         father.decrementTotalResourceQuantity();
-        if(stockProtectionEnabled) notifyAll();
+    }
 
-    }public synchronized void incrementSync(Producer producer){
+
+    public synchronized void incrementSync(Producer producer){
         if (stockProtectionEnabled) {
             // que siga esperando hasta que haya espacio
             while (quantity >= maxQuantity && !father.isMustStop()) {

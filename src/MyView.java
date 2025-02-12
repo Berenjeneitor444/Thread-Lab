@@ -8,10 +8,7 @@ public class MyView extends JFrame implements ActionListener, Runnable {
         return configurationPanel.getConfiguration();
     }
 
-    private enum State {
-        RUNNING, STOPPED, CREATED
-    }
-    private State state = State.STOPPED;
+    private MyController.State state = MyController.State.STOPPED;
     private final ControlPanel controlPanel;
     private final Viewer viewer;
     private final DataPanel dataPanel;
@@ -62,8 +59,8 @@ public class MyView extends JFrame implements ActionListener, Runnable {
         var boton = e.getSource();
         if (boton instanceof JButton) {
             if (boton instanceof Play){
-                if (state == State.STOPPED){
-                    state = State.RUNNING;
+                if (state == MyController.State.STOPPED){
+                    state = MyController.State.RUNNING;
                     father.play();
                     Thread coger = new Thread(this);
                     coger.start();
@@ -71,8 +68,8 @@ public class MyView extends JFrame implements ActionListener, Runnable {
             }
             else if(boton instanceof Stop){
                 if(((Stop) boton).getText().equals("Stop")){
-                    if (state == State.RUNNING){
-                        state = State.STOPPED;
+                    if (state == MyController.State.RUNNING){
+                        state = MyController.State.STOPPED;
                         father.stop();
                         controlPanel.toogleStopButton();
                     }
@@ -81,7 +78,7 @@ public class MyView extends JFrame implements ActionListener, Runnable {
                     dataPanel.updateData(new int[]{0, 0, 0, 0, 0, 0, 0, 0});
                     viewer.deleteRows();
                     father.clear();
-                    state = State.STOPPED;
+                    state = MyController.State.STOPPED;
                     controlPanel.toogleStopButton();
                 }
 
@@ -92,7 +89,7 @@ public class MyView extends JFrame implements ActionListener, Runnable {
     @Override
     public void run() {
         try {
-            while (state == State.RUNNING) {
+            while (state == MyController.State.RUNNING) {
                 refreshStatistics();
                 Thread.sleep(100);
             }
