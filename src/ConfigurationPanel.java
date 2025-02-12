@@ -50,7 +50,7 @@ public class ConfigurationPanel extends JPanel{
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
             if ((row == 16 || row == 20 || row == 21) && column == 1){
                 JCheckBox checkBox = new JCheckBox();
-                checkBox.setSelected((Boolean) value);
+                checkBox.setSelected(Boolean.TRUE.equals(value));
                 return checkBox;
             }
             else{
@@ -60,15 +60,34 @@ public class ConfigurationPanel extends JPanel{
     }
     static class ConfigurationTableEditor extends AbstractCellEditor implements TableCellEditor {
         private final JCheckBox checkBox = new JCheckBox();
+        private final JTextField textField = new JTextField();
+        private Component currentEditor;
+
+        public ConfigurationTableEditor() {
+            // notifica que ha cambiado el valor
+            checkBox.addActionListener(e -> fireEditingStopped());
+        }
+
         @Override
         public Object getCellEditorValue() {
-            return checkBox.isSelected();
+            if (currentEditor == checkBox) {
+                return checkBox.isSelected();  // Esto devuelve un boolean primitivo
+            } else if (currentEditor == textField) {
+                return textField.getText();
+            }
+            return null;
         }
-        // TODO: HAZ QUE ESTA CLASE MANEJE TODOS LOS EDITORES DE LA COLUMNA EN VEZ DE SOLO LOS BOOLEANOS
+
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            checkBox.setSelected((Boolean) value);
-            return checkBox;
+            if (value instanceof Boolean) {
+                checkBox.setSelected((Boolean) value); // Cast explícito a Boolean
+                currentEditor = checkBox;
+            } else {
+                textField.setText(value == null ? null : value.toString());
+                currentEditor = textField;
+            }
+            return currentEditor;
         }
     }
     class ConfigurationTableModel extends AbstractTableModel {
@@ -90,12 +109,12 @@ public class ConfigurationPanel extends JPanel{
                 {"Start Delay Min (ms)", String.valueOf(configurationDTO.getStartDelayMin())},
                 {"Start Delay Max (ms)", String.valueOf(configurationDTO.getStartDelayMax())},
                 {"**Thread Lifetime Parameters**", null},
-                {"Life Cycle enabled", Boolean.valueOf(configurationDTO.isLifeCycleEnabled())},
+                {"Life Cycle enabled", configurationDTO.isLifeCycleEnabled()},
                 {"Min Cicles", String.valueOf(configurationDTO.getMinCycles())},
                 {"Max Cicles", String.valueOf(configurationDTO.getMaxCycles())},
                 {"**Thread Safety Settings**", null},
-                {"Guarded Blocks Enabled", Boolean.valueOf(configurationDTO.isGuardedBlocksEnabled())},
-                {"Stock Protection Enabled", Boolean.valueOf(configurationDTO.isStockProtectionEnabled())}
+                {"Guarded Blocks Enabled", configurationDTO.isGuardedBlocksEnabled()},
+                {"Stock Protection Enabled", configurationDTO.isStockProtectionEnabled()}
         };
 
         @Override

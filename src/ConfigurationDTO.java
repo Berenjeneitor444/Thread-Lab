@@ -31,11 +31,11 @@ public class ConfigurationDTO {
         this.consumerDelayMax = Integer.parseInt((String)values[RowIndexes.CONSUMER_DELAY_MAX]);
         this.startDelayMin = Integer.parseInt((String)values[RowIndexes.START_DELAY_MIN]);
         this.startDelayMax = Integer.parseInt((String)values[RowIndexes.START_DELAY_MAX]);
-        this.lifeCycleEnabled = Boolean.parseBoolean((String)values[RowIndexes.LIFECYCLE_ENABLED]);
+        this.lifeCycleEnabled = (Boolean) values[RowIndexes.LIFECYCLE_ENABLED];
         this.minCycles = Integer.parseInt((String)values[RowIndexes.MIN_CICLES]);
         this.maxCycles = Integer.parseInt((String)values[RowIndexes.MAX_CICLES]);
-        this.guardedBlocksEnabled = Boolean.parseBoolean((String)values[RowIndexes.GUARDED_BLOCKS_ENABLED]);
-        this.stockProtectionEnabled = Boolean.parseBoolean((String)values[RowIndexes.STOCK_PROTECTION_ENABLED]);
+        this.guardedBlocksEnabled = (Boolean)values[RowIndexes.GUARDED_BLOCKS_ENABLED];
+        this.stockProtectionEnabled = (Boolean)values[RowIndexes.STOCK_PROTECTION_ENABLED];
     }
     // valores predeterminados
     public ConfigurationDTO(){
