@@ -2,7 +2,6 @@ import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
 public class ConfigurationPanel extends JPanel{
@@ -12,7 +11,8 @@ public class ConfigurationPanel extends JPanel{
     public ConfigurationPanel(){
         this.configurationDTO = new ConfigurationDTO();
         table = new JTable(new ConfigurationTableModel());
-        table.setDefaultRenderer(Object.class, this);
+        table.setDefaultRenderer(Object.class, new ConfigurationTableRenderer());
+        table.setDefaultEditor(Object.class, new ConfigurationTableEditor());
         table.getColumnModel().getColumn(0).setPreferredWidth(150);
         table.getColumnModel().getColumn(1).setPreferredWidth(30);
         table.setRowHeight(20);
@@ -45,12 +45,12 @@ public class ConfigurationPanel extends JPanel{
     }
 
 
-    class ConfigurationTableRenderer extends DefaultTableCellRenderer{
+    static class ConfigurationTableRenderer extends DefaultTableCellRenderer{
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
             if ((row == 16 || row == 20 || row == 21) && column == 1){
                 JCheckBox checkBox = new JCheckBox();
-                checkBox.setSelected((boolean) value);
+                checkBox.setSelected((Boolean) value);
                 return checkBox;
             }
             else{
@@ -58,16 +58,16 @@ public class ConfigurationPanel extends JPanel{
             }
         }
     }
-    class CheckboxEditor extends AbstractCellEditor implements TableCellEditor {
+    static class ConfigurationTableEditor extends AbstractCellEditor implements TableCellEditor {
         private final JCheckBox checkBox = new JCheckBox();
         @Override
         public Object getCellEditorValue() {
             return checkBox.isSelected();
         }
-
+        // TODO: HAZ QUE ESTA CLASE MANEJE TODOS LOS EDITORES DE LA COLUMNA EN VEZ DE SOLO LOS BOOLEANOS
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            checkBox.setSelected((boolean) value);
+            checkBox.setSelected((Boolean) value);
             return checkBox;
         }
     }
@@ -90,12 +90,12 @@ public class ConfigurationPanel extends JPanel{
                 {"Start Delay Min (ms)", String.valueOf(configurationDTO.getStartDelayMin())},
                 {"Start Delay Max (ms)", String.valueOf(configurationDTO.getStartDelayMax())},
                 {"**Thread Lifetime Parameters**", null},
-                {"Life Cycle enabled", configurationDTO.isLifeCycleEnabled()},
+                {"Life Cycle enabled", Boolean.valueOf(configurationDTO.isLifeCycleEnabled())},
                 {"Min Cicles", String.valueOf(configurationDTO.getMinCycles())},
                 {"Max Cicles", String.valueOf(configurationDTO.getMaxCycles())},
                 {"**Thread Safety Settings**", null},
-                {"Guarded Blocks Enabled", configurationDTO.isGuardedBlocksEnabled()},
-                {"Stock Protection Enabled", configurationDTO.isStockProtectionEnabled()}
+                {"Guarded Blocks Enabled", Boolean.valueOf(configurationDTO.isGuardedBlocksEnabled())},
+                {"Stock Protection Enabled", Boolean.valueOf(configurationDTO.isStockProtectionEnabled())}
         };
 
         @Override
@@ -122,7 +122,7 @@ public class ConfigurationPanel extends JPanel{
         }
         @Override
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-            data[rowIndex][columnIndex] = String.valueOf(aValue);
+            data[rowIndex][columnIndex] = aValue;
             fireTableCellUpdated(rowIndex, columnIndex);
         }
 
