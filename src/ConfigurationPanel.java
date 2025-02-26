@@ -15,11 +15,17 @@ public class ConfigurationPanel extends JPanel{
         table.setDefaultEditor(Object.class, new ConfigurationTableEditor());
         table.getColumnModel().getColumn(0).setPreferredWidth(150);
         table.getColumnModel().getColumn(1).setPreferredWidth(30);
-        table.setRowHeight(20);
+        table.setRowHeight(22);
         table.setFillsViewportHeight(true);
+        // titulo
+        JLabel label = new JLabel("Thread Lab Configuration");
+        label.setFont(new Font("Arial", Font.BOLD, 16));
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setVerticalAlignment(SwingConstants.CENTER);
+        // posicionamiento
         this.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         gbc.gridx = 0;
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
@@ -27,8 +33,10 @@ public class ConfigurationPanel extends JPanel{
         gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
         this.add(new JScrollPane(table), gbc);
-        this.setBackground(Color.BLACK);
-        this.setVisible(true);
+        gbc.gridy = 0;
+        gbc.weighty = 0.05f;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        this.add(label, gbc);
     }
 
     public ConfigurationDTO getConfiguration() {
@@ -48,14 +56,27 @@ public class ConfigurationPanel extends JPanel{
     static class ConfigurationTableRenderer extends DefaultTableCellRenderer{
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+            // decorar la tabla
+
+            // filas de titulos
+            if(row == 0 || row == 4 || row == 8 || row == 12 || row == 15 || row == 19){
+                setBackground(Color.BLUE);
+                setForeground(Color.WHITE);
+                setFont(getFont().deriveFont(Font.BOLD));
+            }
+            // filas normales
+            else{
+                setBackground(Color.WHITE);
+                setForeground(Color.BLACK);
+                setFont(getFont().deriveFont(Font.PLAIN));
+            }
+            // configuracion checkbox
             if ((row == 16 || row == 20 || row == 21) && column == 1){
                 JCheckBox checkBox = new JCheckBox();
                 checkBox.setSelected(Boolean.TRUE.equals(value));
                 return checkBox;
             }
-            else{
-                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            }
+            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         }
     }
     static class ConfigurationTableEditor extends AbstractCellEditor implements TableCellEditor {
@@ -71,7 +92,7 @@ public class ConfigurationPanel extends JPanel{
         @Override
         public Object getCellEditorValue() {
             if (currentEditor == checkBox) {
-                return checkBox.isSelected();  // Esto devuelve un boolean primitivo
+                return checkBox.isSelected();
             } else if (currentEditor == textField) {
                 return textField.getText();
             }
@@ -81,7 +102,7 @@ public class ConfigurationPanel extends JPanel{
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
             if (value instanceof Boolean) {
-                checkBox.setSelected((Boolean) value); // Cast explícito a Boolean
+                checkBox.setSelected((Boolean) value);
                 currentEditor = checkBox;
             } else {
                 textField.setText(value == null ? null : value.toString());

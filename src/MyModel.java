@@ -8,20 +8,8 @@ public class MyModel {
         return statisticsDTO;
     }
 
-    public boolean isMustStop() {
-        return mustStop;
-    }
-
-    public void clear() {
-        consumers.clear();
-        producers.clear();
-        resourceTypes.clear();
-        statisticsDTO = new StatisticsDTO();
-        mustStop = false;
-        state = MyController.State.STOPPED;
-    }
-
     private final ArrayList<Consumer> consumers = new ArrayList<>();
+
     private final ArrayList<Producer> producers = new ArrayList<>();
     private final ArrayList<ResourceType> resourceTypes = new ArrayList<>();
     private ConfigurationDTO configurationDTO;
@@ -31,7 +19,6 @@ public class MyModel {
     private StatisticsDTO statisticsDTO;
     private boolean mustStop = false;
     private final SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss.SSS");
-
     public synchronized void incrementTotalResourceTypes() {
         statisticsDTO.incrementTotalResourceTypes();
     }
@@ -66,6 +53,19 @@ public class MyModel {
 
     public synchronized void decrementActiveThreads() {
         statisticsDTO.decrementActiveThreads();
+    }
+
+    public boolean isMustStop() {
+        return mustStop;
+    }
+
+    public void clear() {
+        consumers.clear();
+        producers.clear();
+        resourceTypes.clear();
+        statisticsDTO = new StatisticsDTO();
+        mustStop = false;
+        state = MyController.State.STOPPED;
     }
 
     public MyModel(MyController father) {
@@ -161,7 +161,7 @@ public class MyModel {
     }
 
     private Object[] breakDownResourceType(ResourceType resourceType) {
-        Object[] data = new Object[6];
+        Object[] data = new Object[9];
         data[0] = resourceType.getId();
         data[1] = resourceType.getQuantity();
         data[2] = resourceType.getMinQuantity();

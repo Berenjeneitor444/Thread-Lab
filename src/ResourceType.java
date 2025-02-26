@@ -1,3 +1,5 @@
+import static java.lang.Thread.sleep;
+
 public class ResourceType {
     private int quantity;
     private int maxQuantity;
@@ -26,6 +28,11 @@ public class ResourceType {
             // que siga esperando hasta que haya espacio
             while (quantity >= maxQuantity && !father.isMustStop()) {
                 // condicional para que solo entre en el bloque de abajo una vez y luego se quede esperando
+                try {
+                    sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 if (producer.getState() == MyController.State.IDLE){
                     continue;
                 }
@@ -52,6 +59,11 @@ public class ResourceType {
         if (stockProtectionEnabled) {
             // que siga esperando hasta que haya espacio
             while (quantity <= minQuantity && !father.isMustStop()) {
+                try {
+                    sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 // condicional para que solo entre en el bloque de abajo una vez y luego se quede esperando
                 if (consumer.getState() == MyController.State.IDLE) {
                     continue;
@@ -130,6 +142,7 @@ public class ResourceType {
         father.decrementTotalResourceQuantity();
         if(stockProtectionEnabled) notifyAll();
     }
+
     public String getId() {
         return id;
     }

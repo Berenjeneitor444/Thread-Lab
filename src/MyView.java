@@ -23,7 +23,6 @@ public class MyView extends JFrame implements ActionListener, Runnable {
         configurationPanel = new ConfigurationPanel();
         controlPanel.getPlay().addActionListener(this);
         controlPanel.getCancel().addActionListener(this);
-        System.out.println("MyView creado");
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -49,7 +48,6 @@ public class MyView extends JFrame implements ActionListener, Runnable {
         constraints.gridy = 0;
         add(viewer, constraints);
         this.setSize(800, 630);
-        this.setTitle("UML Ejemplo");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     }

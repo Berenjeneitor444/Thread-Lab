@@ -73,7 +73,6 @@ public class Producer implements Runnable {
             this.lifeCicle = false;
         }
         father.incrementTotalProducers();
-        System.out.println("Producer creado");
     }
 
     public void run() {

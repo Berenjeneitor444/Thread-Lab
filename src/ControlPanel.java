@@ -30,7 +30,6 @@ public class ControlPanel extends JPanel {
         this.add(play, constraints);
 
         this.setVisible(true);
-        System.out.println("Controls creado");
     }
     public void toogleStopButton(){
         if (stop.getText().equals("Stop")){
